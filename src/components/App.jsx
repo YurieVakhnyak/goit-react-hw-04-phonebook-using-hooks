@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Notify } from 'notiflix';
 import { nanoid } from 'nanoid';
 import { Filter } from './Filter/Filter';
@@ -15,11 +15,16 @@ export default function App() {
   ];
   const [contacts, setContacts] = useState(INITIAL_CONTACTS);
   const [filter, setFilter] = useState('');
+  const isFirstRender = useRef(true);
 
-  useState(() => {
-    const contacts = JSON.parse(localStorage.getItem('contacts'));
-    if (contacts) {
-      setContacts(contacts);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      const contactsFromStorage = JSON.parse(localStorage.getItem('contacts'));
+      if (contactsFromStorage) {
+        setContacts(contactsFromStorage);
+      }
+      isFirstRender.current = false;
+      return;
     }
   }, []);
 
